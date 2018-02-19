@@ -1,17 +1,23 @@
-'''
-Created on 12 feb. 2018
-
-@author: srk
-'''
+# -*- coding: utf-8 -*-
 
 class Peliculas(object):
-    '''
-    classdocs
-    '''
+    # Propiedades
+    id = ""
+    titulo = ""
+    fechaEstreno = ""
+    generos = ""
+    director = ""
+    duracion = ""
 
-
-    def __init__(self, params):
-        '''
-        Constructor
-        '''
-        
+    # Constructor
+    def __init__(self, id, titulo, fechaEstreno, generos, director, duracion):
+        self.id = id
+        self.titulo = titulo
+        self.fechaEstreno = fechaEstreno
+        self.generos = generos
+        self.director = director
+        self.duracion = duracion
+    
+    def to_string(self):
+        cadena = "ID: " + self.id + " - Título: " + self.titulo + " - Fecha: " + self.fechaEstreno + " - Géneros: " + self.generos + " - Director " + self.director + " - Duración: " + self.duracion
+        return cadena

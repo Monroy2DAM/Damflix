@@ -1,8 +1,32 @@
 # -*- coding: utf-8 -*-
 from __builtin__ import str
 from Usuario import Usuario
+from Peliculas import Peliculas
+from Series import Series
 
-mi_lista = []
+global_usuario = Usuario
+lista_usuarios = []
+lista_peliculas = []
+lista_series = []
+
+def leerFicheros():
+    archivoPeliculas = open("../bd/peliculas.txt", "r")
+    
+    for linea in archivoPeliculas.readlines():
+        listaDatosPelicula = linea.split(";")
+        pelicula = Peliculas(listaDatosPelicula[0], listaDatosPelicula[1], listaDatosPelicula[2], listaDatosPelicula[3], listaDatosPelicula[4], listaDatosPelicula[5])
+        lista_peliculas.append(pelicula)
+        
+    archivoPeliculas.close()
+    
+    archivoSeries = open("../bd/series.txt", "r")
+
+    for linea in archivoSeries.readlines():
+        listaDatosSerie = linea.split(";")
+        serie = Series(listaDatosSerie[0], listaDatosSerie[1], listaDatosSerie[2], listaDatosSerie[3], listaDatosSerie[4], listaDatosSerie[5])
+        lista_series.append(serie)
+    
+    archivoSeries.close()
 
 def mostrarMenuUsuario():
     print("==================")
@@ -34,32 +58,42 @@ def tratarOpcionMenuUsuario(opcion):
     return opcionATratar()
 
 def registro():
+    global lista_usuarios
+    global global_usuario
+    
     print("=========================")
     print("|| REGISTRO DE USUARIO ||")
     print("=========================")
     nick = raw_input(">>> Nombre: ")
     edad = input(">>> Edad: ")
     clave = raw_input(">>> Contraseña: ")
-    usuario = Usuario(nick, edad, clave)
-    mi_lista.append(usuario)
     
+    usuario = Usuario(nick, edad, clave)
+    global_usuario = usuario
+    lista_usuarios.append(global_usuario)
+    print len(lista_usuarios)
     mostrarMenuUsuario()
     
     #print("Aqui mostramos al usuario:")
     #print usuario.recoger()
 
 def inicioSesion():
+    global lista_usuarios
+    
     print("====================")
     print("|| INICIAR SESIÓN ||")
     print("====================")
     nick = raw_input(">>> Nombre: ")
     clave = raw_input(">>> Contraseña: ")
     
-    for usuario in mi_lista:
+    for usuario in lista_usuarios:
         hayError = True
         
         if (nick == usuario.get_nombre() and clave == usuario.get_clave()):
             hayError = False
+            global global_usuario
+            global_usuario = usuario
+            break
     
     if (hayError):
         print("\n[ERROR] Credenciales incorrectas.\n")
@@ -75,8 +109,10 @@ def mostrarMenuDamflix():
     print("1. Menú películas.")
     print("2. Menú series.")
     print("3. Cerrar Sesion.")
-    print("4. Salir\n")
-    opcion = solicitarOpcion(">>> Opción: ", 3)
+    print("4. Salir.\n")
+    opcion = solicitarOpcion(">>> Opción: ", 4)
+    
+    tratarOpcionMenuDamflix(opcion)
 
 def tratarOpcionMenuDamflix(opcion):
     switcher = {
@@ -89,7 +125,82 @@ def tratarOpcionMenuDamflix(opcion):
     
     return opcionATratar()
 
+def mostrarMenuPeliculas():
+    print("=========================")
+    print("|| DAMFLIX - PELÍCULAS ||")
+    print("=========================")
+    print("1. Ver catálogo.")
+    print("2. Marcar película como vista.")
+    print("3. Ver lista de películas vista.")
+    print("4. Marcar película para ver.")
+    print("5. Ver lista de películas para ver.")
+    print("6. Volver atrás.\n")
+    opcion = solicitarOpcion(">>> Opción: ", 6)
+    tratarOpcionMenuPeliculas(opcion)
+    
+def tratarOpcionMenuPeliculas(opcion):
+    switcher = {
+        1: verCatalogoPeliculas,
+        2: marcarPeliculaVista,
+        3: verListaPeliculasVistas,
+        4: marcarPeliculaParaVer,
+        5: verListaPeliculasPorVer,
+        6: mostrarMenuDamflix
+    }
+    
+    opcionATratar = switcher.get(opcion, lambda: "¡Hasta pronto!")
+    
+    return opcionATratar()
+    
+def verCatalogoPeliculas():
+    for pelicula in lista_peliculas:
+        print pelicula.to_string()
+    
+    mostrarMenuPeliculas()
+    
+def marcarPeliculaVista():
+    global global_usuario
+    
+    opcion = solicitarOpcion(">>> ID de la película: ", len(lista_peliculas))
+    pelicula = lista_peliculas[opcion - 1]
+    global_usuario.anhadir_pelicula_vista(pelicula)
+    mostrarMenuPeliculas()
+    
+def verListaPeliculasVistas():
+    global global_usuario
+    
+    for pelicula in global_usuario.get_peliculas_vistas():
+        print pelicula.to_string()
+    
+    print "\n"
+    mostrarMenuPeliculas()
+    
+def marcarPeliculaParaVer():
+    global global_usuario
+    
+    opcion = solicitarOpcion(">>> ID de la película: ", len(lista_peliculas))
+    pelicula = lista_peliculas[opcion - 1]
+    global_usuario.anhadir_pelicula_por_ver(pelicula)
+    mostrarMenuPeliculas()
+    
+def verListaPeliculasPorVer():
+    global global_usuario
+    
+    for pelicula in global_usuario.get_peliculas_por_ver():
+        print pelicula.to_string()
+    
+    print "\n"
+    mostrarMenuPeliculas()
+    
+def mostrarMenuSeries():
+    print("=====================")
+    print("|| DAMFLIX - SERIES ||")
+    print("=====================")
+    print("1. Ver catálogo.")
+    print("2. Marcar serie como vista.")
+    print("3. Marcar serie para ver.")
+    print("4. Volver atrás.\n")
+    opcion = solicitarOpcion(">>> Opción: ", 4)
+
+leerFicheros()
 mostrarMenuUsuario()
-
-
-

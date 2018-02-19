@@ -1,20 +1,16 @@
 # -*- coding: utf-8 -*-
 from __builtin__ import str
-'''
-Created on 12 feb. 2018
-
-@author: srk
-'''
+from Peliculas import Peliculas
 
 class Usuario():
     # Propiedades
-    nombre=""
-    clave=""
-    edad=0
-    peliculasVistas=[]
-    peliculasPorVer=[]
-    seriesVistas=[]
-    seriesPorVer=[]
+    nombre = ""
+    clave = ""
+    edad = 0
+    peliculasVistas = []
+    peliculasPorVer = []
+    seriesVistas = []
+    seriesPorVer = []
 
     # Constructor
     def __init__(self, nombre, edad, clave):
@@ -31,3 +27,15 @@ class Usuario():
     
     def get_clave(self):
         return self.clave
+    
+    def get_peliculas_vistas(self):
+        return self.peliculasVistas
+    
+    def get_peliculas_por_ver(self):
+        return self.peliculasPorVer
+    
+    def anhadir_pelicula_vista(self, pelicula):
+        self.peliculasVistas.append(pelicula)
+        
+    def anhadir_pelicula_por_ver(self, pelicula):
+        self.peliculasPorVer.append(pelicula)
