@@ -6,5 +6,5 @@
 6;Godless;22/11/2017;Western/Drama;Scott Frank;1:00;1;7;
 7;Los Simpsons;17/12/1989;Animacion/Comedia/Sátira;Matt Groening;0:22;29;22;
 8;Rick y Morty;02/12/2013;Animacion/Comedia/Fantastica;Justin Roiland;0:20;3;10;
-9;El Fin de la Comedia;7/11/2014;Comedia/Drama;Ignatius Farray;0:22;
-10;It Crowd;03/02/2006;Comedia;Graham Lineham;0:22;4;24;2;6;
+9;El Fin de la Comedia;7/11/2014;Comedia/Drama;Ignatius Farray;0:22;2;6;
+10;It Crowd;03/02/2006;Comedia;Graham Lineham;0:22;4;24;

@@ -23,7 +23,15 @@ def leerFicheros():
 
     for linea in archivoSeries.readlines():
         listaDatosSerie = linea.split(";")
-        serie = Series(listaDatosSerie[0], listaDatosSerie[1], listaDatosSerie[2], listaDatosSerie[3], listaDatosSerie[4], listaDatosSerie[5])
+        
+        numeroTemporadas = listaDatosSerie[6];
+        numeroCapitulos = listaDatosSerie[7];
+        lista_temporadas = []
+        
+        for contador in range(0, int(numeroTemporadas)):
+            lista_temporadas.append(numeroCapitulos)
+        
+        serie = Series(listaDatosSerie[0], listaDatosSerie[1], listaDatosSerie[2], listaDatosSerie[3], listaDatosSerie[4], listaDatosSerie[5], lista_temporadas)
         lista_series.append(serie)
     
     archivoSeries.close()
@@ -148,7 +156,7 @@ def tratarOpcionMenuPeliculas(opcion):
         6: mostrarMenuDamflix
     }
     
-    opcionATratar = switcher.get(opcion, lambda: "¡Hasta pronto!")
+    opcionATratar = switcher.get(opcion)
     
     return opcionATratar()
     
@@ -193,14 +201,41 @@ def verListaPeliculasPorVer():
     mostrarMenuPeliculas()
     
 def mostrarMenuSeries():
-    print("=====================")
+    print("======================")
     print("|| DAMFLIX - SERIES ||")
-    print("=====================")
+    print("======================")
     print("1. Ver catálogo.")
     print("2. Marcar serie como vista.")
-    print("3. Marcar serie para ver.")
-    print("4. Volver atrás.\n")
-    opcion = solicitarOpcion(">>> Opción: ", 4)
+    print("3. Ver lista de series vistas.")
+    print("4. Marcar serie para ver.")
+    print("5. Ver lista de series para ver.")
+    print("6. Marcar capítulo visto.")
+    print("7. Ver lista de capíulos vistos.")
+    print("8. Volver atrás.\n")
+    opcion = solicitarOpcion(">>> Opción: ", 8)
+    tratarOpcionMenuSeries(opcion)
+    
+def tratarOpcionMenuSeries(opcion):
+    switcher = {
+        1: verCatalogoSeries,
+        #2: marcarSerieVista,
+        #3: verListaSeriessVistas,
+        #4: marcarSerieParaVer,
+        #5: verListaSeriesPorVer,
+        #6: marcarCapituloVisto,
+        #7: verListaCapitulosVistos,
+        #8: mostrarMenuDamflix
+    }
+    
+    opcionATratar = switcher.get(opcion)
+    
+    return opcionATratar()
+
+def verCatalogoSeries():
+    for serie in lista_series:
+        print serie.to_string()
+    
+    mostrarMenuSeries()
 
 leerFicheros()
 mostrarMenuUsuario()
