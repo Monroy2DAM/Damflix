@@ -22,5 +22,13 @@ class Series(object):
     
     def to_string(self):
         # TODO: Pasar lista a cadena.
-        cadena = self.id + " " + self.titulo + " " + self.fechaEstreno + " " + self.generos + " " + self.director + " " + self.duracion + " " + self.temporadas
+        
+        cadenaTemporadas = ""
+        
+        for temporada in self.temporadas:
+            cadenaTemporadas += temporada + ", "
+        
+        cadenaTemporadas = cadenaTemporadas[:-2]
+        
+        cadena = "ID: " + self.id + " | Título: " + self.titulo + " | Fecha: " + self.fechaEstreno + " | Géneros: " + self.generos + " | Director: " + self.director + " | Duración: " + self.duracion + " | Temporadas/Capítulos: " + cadenaTemporadas
         return cadena

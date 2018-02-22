@@ -41,12 +41,14 @@ def leerFicheros():
 
 # Se muestra el menú de usuario.
 def mostrarMenuUsuario():
+    print
     print("==================")
     print("|| MENÚ USUARIO ||")
     print("==================")
     print("[1] Registrarse.")
     print("[2] Iniciar sesión.")
     print("[3] Salir.\n")
+    
     opcion = solicitarOpcion(">>> Opción: ", 3)
     tratarOpcionMenuUsuario(opcion)
 
@@ -64,7 +66,8 @@ def solicitarOpcion(mensaje, opcionMaxima):
 def tratarOpcionMenuUsuario(opcion):
     switcher = {
         1: registro,
-        2: inicioSesion
+        2: inicioSesion,
+        3: verUsuarios
     }
     
     opcionATratar = switcher.get(opcion, lambda: "¡Hasta pronto!")
@@ -107,13 +110,10 @@ def registro():
             print("[ERROR] Introduce al menos un carácter.")
     
     usuario = Usuario(nick, edad, clave)
+    #global_usuario = None
     global_usuario = usuario
     lista_usuarios.append(global_usuario)
-    print len(lista_usuarios)
     mostrarMenuUsuario()
-    
-    #print("Aqui mostramos al usuario:")
-    #print usuario.recoger()
 
 def inicioSesion():
     global lista_usuarios
@@ -142,6 +142,8 @@ def inicioSesion():
         mostrarMenuDamflix()
 
 def mostrarMenuDamflix():
+    global global_usuario
+    
     print
     print("=============")
     print("|| DAMFLIX ||")
@@ -150,6 +152,7 @@ def mostrarMenuDamflix():
     print("[2] Menú series.")
     print("[3] Cerrar sesión.")
     print("[4] Salir.\n")
+    
     opcion = solicitarOpcion(">>> Opción: ", 4)
     
     tratarOpcionMenuDamflix(opcion)
@@ -213,7 +216,6 @@ def verListaPeliculasVistas():
     for pelicula in global_usuario.get_peliculas_vistas():
         print pelicula.to_string()
     
-    print "\n"
     mostrarMenuPeliculas()
     
 def marcarPeliculaParaVer():
@@ -230,10 +232,10 @@ def verListaPeliculasPorVer():
     for pelicula in global_usuario.get_peliculas_por_ver():
         print pelicula.to_string()
     
-    print "\n"
     mostrarMenuPeliculas()
     
 def mostrarMenuSeries():
+    print
     print("======================")
     print("|| DAMFLIX - SERIES ||")
     print("======================")
@@ -252,13 +254,13 @@ def mostrarMenuSeries():
 def tratarOpcionMenuSeries(opcion):
     switcher = {
         1: verCatalogoSeries,
-        #2: marcarSerieVista,
-        #3: verListaSeriessVistas,
-        #4: marcarSerieParaVer,
-        #5: verListaSeriesPorVer,
+        2: marcarSerieVista,
+        3: verListaSeriesVistas,
+        4: marcarSerieParaVer,
+        5: verListaSeriesPorVer,
         #6: marcarCapituloVisto,
         #7: verListaCapitulosVistos,
-        #8: mostrarMenuDamflix
+        8: mostrarMenuDamflix
     }
     
     opcionATratar = switcher.get(opcion)
@@ -270,6 +272,43 @@ def verCatalogoSeries():
         print serie.to_string()
     
     mostrarMenuSeries()
+    
+def marcarSerieVista():
+    global global_usuario
+    
+    opcion = solicitarOpcion(">>> ID de la serie: ", len(lista_series))
+    serie = lista_series[opcion - 1]
+    global_usuario.anhadir_serie_vista(serie)
+    mostrarMenuSeries()
+
+def verListaSeriesVistas():
+    global global_usuario
+    
+    for serie in global_usuario.get_series_vistas():
+        print serie.to_string()
+    
+    mostrarMenuSeries()
+
+def marcarSerieParaVer():
+    global global_usuario
+    
+    opcion = solicitarOpcion(">>> ID de la serie: ", len(lista_series))
+    serie = lista_series[opcion - 1]
+    global_usuario.anhadir_serie_por_ver(serie)
+    mostrarMenuSeries()
+
+def verListaSeriesPorVer():
+    global global_usuario
+    
+    for serie in global_usuario.get_series_por_ver():
+        print serie.to_string()
+    
+    mostrarMenuSeries()
+
+def marcarCapituloVisto():
+    global global_usuario
+    
+    
 
 leerFicheros()
 mostrarMenuUsuario()
