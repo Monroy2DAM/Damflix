@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
-from __builtin__ import str
+import getpass
+import sys
+from __builtin__ import str, int
 from Usuario import Usuario
 from Peliculas import Peliculas
 from Series import Series
@@ -9,6 +11,7 @@ lista_usuarios = []
 lista_peliculas = []
 lista_series = []
 
+# Se leen los ficheros de películas y series, y se cargan en sus respectivas listas.
 def leerFicheros():
     archivoPeliculas = open("../bd/peliculas.txt", "r")
     
@@ -36,16 +39,18 @@ def leerFicheros():
     
     archivoSeries.close()
 
+# Se muestra el menú de usuario.
 def mostrarMenuUsuario():
     print("==================")
     print("|| MENÚ USUARIO ||")
     print("==================")
-    print("1. Registrarse.")
-    print("2. Iniciar sesión.")
-    print("3. Salir.\n")
+    print("[1] Registrarse.")
+    print("[2] Iniciar sesión.")
+    print("[3] Salir.\n")
     opcion = solicitarOpcion(">>> Opción: ", 3)
     tratarOpcionMenuUsuario(opcion)
 
+# Se solicita una opción.
 def solicitarOpcion(mensaje, opcionMaxima):
     while True:
         opcion = input(mensaje)
@@ -55,6 +60,7 @@ def solicitarOpcion(mensaje, opcionMaxima):
     
     return opcion
 
+# Se trata una opción dada.
 def tratarOpcionMenuUsuario(opcion):
     switcher = {
         1: registro,
@@ -65,16 +71,40 @@ def tratarOpcionMenuUsuario(opcion):
     
     return opcionATratar()
 
+# Se registra a un usuario.
 def registro():
     global lista_usuarios
     global global_usuario
     
+    print
     print("=========================")
     print("|| REGISTRO DE USUARIO ||")
     print("=========================")
-    nick = raw_input(">>> Nombre: ")
-    edad = input(">>> Edad: ")
-    clave = raw_input(">>> Contraseña: ")
+    
+    while True:
+        nick = raw_input(">>> Nombre: ")
+        
+        if (len(nick) > 0):
+            break
+        else:
+            print("[ERROR] Introduce al menos un carácter.")
+            
+    while 1:
+        edad = raw_input(">>> Edad: ")
+        
+        if edad.isdigit():
+            edad = int(edad)
+            break
+        else:
+            print("[ERROR] Introduce un número válido.")
+    
+    while True:
+        clave = raw_input(prompt = ">>> Contraseña: ")
+        
+        if (len(clave) > 0):
+            break
+        else:
+            print("[ERROR] Introduce al menos un carácter.")
     
     usuario = Usuario(nick, edad, clave)
     global_usuario = usuario
@@ -88,6 +118,7 @@ def registro():
 def inicioSesion():
     global lista_usuarios
     
+    print
     print("====================")
     print("|| INICIAR SESIÓN ||")
     print("====================")
@@ -111,13 +142,14 @@ def inicioSesion():
         mostrarMenuDamflix()
 
 def mostrarMenuDamflix():
+    print
     print("=============")
     print("|| DAMFLIX ||")
     print("=============")
-    print("1. Menú películas.")
-    print("2. Menú series.")
-    print("3. Cerrar Sesion.")
-    print("4. Salir.\n")
+    print("[1] Menú películas.")
+    print("[2] Menú series.")
+    print("[3] Cerrar sesión.")
+    print("[4] Salir.\n")
     opcion = solicitarOpcion(">>> Opción: ", 4)
     
     tratarOpcionMenuDamflix(opcion)
@@ -134,15 +166,16 @@ def tratarOpcionMenuDamflix(opcion):
     return opcionATratar()
 
 def mostrarMenuPeliculas():
+    print
     print("=========================")
     print("|| DAMFLIX - PELÍCULAS ||")
     print("=========================")
-    print("1. Ver catálogo.")
-    print("2. Marcar película como vista.")
-    print("3. Ver lista de películas vista.")
-    print("4. Marcar película para ver.")
-    print("5. Ver lista de películas para ver.")
-    print("6. Volver atrás.\n")
+    print("[1] Ver catálogo.")
+    print("[2] Marcar película como vista.")
+    print("[3] Ver lista de películas vista.")
+    print("[4] Marcar película para ver.")
+    print("[5] Ver lista de películas para ver.")
+    print("[6] Volver atrás.\n")
     opcion = solicitarOpcion(">>> Opción: ", 6)
     tratarOpcionMenuPeliculas(opcion)
     
@@ -204,14 +237,15 @@ def mostrarMenuSeries():
     print("======================")
     print("|| DAMFLIX - SERIES ||")
     print("======================")
-    print("1. Ver catálogo.")
-    print("2. Marcar serie como vista.")
-    print("3. Ver lista de series vistas.")
-    print("4. Marcar serie para ver.")
-    print("5. Ver lista de series para ver.")
-    print("6. Marcar capítulo visto.")
-    print("7. Ver lista de capíulos vistos.")
-    print("8. Volver atrás.\n")
+    print("[1] Ver catálogo.")
+    print("[2] Marcar serie como vista.")
+    print("[3] Ver lista de series vistas.")
+    print("[4] Marcar serie para ver.")
+    print("[5] Ver lista de series para ver.")
+    print("[6] Marcar capítulo visto.")
+    print("[7] Ver lista de capíulos vistos.")
+    print("[8] Volver atrás.\n")
+    
     opcion = solicitarOpcion(">>> Opción: ", 8)
     tratarOpcionMenuSeries(opcion)
     
