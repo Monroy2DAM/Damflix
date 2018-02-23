@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
 
+from Capitulos import Capitulos
+
+
 class Series(object):
     # Propiedades
     id = ""
@@ -9,6 +12,7 @@ class Series(object):
     director = ""
     duracion = ""
     temporadas = []
+    capitulosVistos = []
 
     # Constructor
     def __init__(self, id, titulo, fechaEstreno, generos, director, duracion, temporadas):
@@ -19,6 +23,20 @@ class Series(object):
         self.director = director
         self.duracion = duracion
         self.temporadas = temporadas
+        
+        for temporada in self.temporadas:
+            capitulosVisto.append(temporada=[])
+            
+            for temporada in range(0, self.temporadas[0]):
+                capitulo = Capitulos
+                temporada.append(capitulo)
+                
+    def mostrarCapitulosVistos(self):
+        cadena = ""
+        
+        for temporada in self.capitulosVistos:
+            for capitulo in self.temporadas:
+                capitulo.getVisto
     
     def to_string(self):
         # TODO: Pasar lista a cadena.

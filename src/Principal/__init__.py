@@ -66,8 +66,7 @@ def solicitarOpcion(mensaje, opcionMaxima):
 def tratarOpcionMenuUsuario(opcion):
     switcher = {
         1: registro,
-        2: inicioSesion,
-        3: verUsuarios
+        2: inicioSesion
     }
     
     opcionATratar = switcher.get(opcion, lambda: "¡Hasta pronto!")
