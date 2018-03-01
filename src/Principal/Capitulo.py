@@ -2,10 +2,11 @@
 
 """
 Autores:
+    - Francisco Rodríguez García
     - Juan José Sánchez Troncoso
     - José Miguel Mata Boza
     - Pablo García Moya
-    - Francisco Rodríguez García
+    - Francisco de Asis Marquez Montoya
 """
 
 class Capitulo(object):

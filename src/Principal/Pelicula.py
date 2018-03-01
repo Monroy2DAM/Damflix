@@ -2,10 +2,11 @@
 
 """
 Autores:
+    - Francisco Rodríguez García
     - Juan José Sánchez Troncoso
     - José Miguel Mata Boza
     - Pablo García Moya
-    - Francisco Rodríguez García
+    - Francisco de Asis Marquez Montoya
 """
 
 class Pelicula(object):
@@ -27,6 +28,9 @@ class Pelicula(object):
         self.duracion = duracion
     
     # GETTERS
+    def get_id(self):
+        return self.id
+    
     def get_titulo(self):
         return self.titulo
     

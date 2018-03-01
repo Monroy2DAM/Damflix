@@ -2,10 +2,11 @@
 
 """
 Autores:
+    - Francisco Rodríguez García
     - Juan José Sánchez Troncoso
     - José Miguel Mata Boza
     - Pablo García Moya
-    - Francisco Rodríguez García
+    - Francisco de Asis Marquez Montoya
 """
 
 from __builtin__ import str, int
@@ -77,10 +78,14 @@ def mostrarMenuUsuario():
 # Solicita una opción, desde 0 hasta un límite marcado.
 def solicitarOpcion(mensaje, opcionMaxima):
     while True:
-        opcion = input(mensaje)
+        opcion = raw_input(mensaje)
         
-        if (opcion >= 0 and opcion <= opcionMaxima):
-            break
+        if opcion.isdigit():
+            opcion = int(opcion)
+            if (opcion > 0 and opcion <= opcionMaxima):
+                break
+        else:
+            print("[ERROR] Introduce un número válido.")
     
     return opcion
 
@@ -88,12 +93,16 @@ def solicitarOpcion(mensaje, opcionMaxima):
 def tratarOpcionMenuUsuario(opcion):
     switcher = {
         1: registro,
-        2: inicioSesion
+        2: inicioSesion,
+        3: mostrarDespedida
     }
     
-    opcionATratar = switcher.get(opcion, lambda: "¡Hasta pronto!")
+    opcionATratar = switcher.get(opcion, "¡Hasta pronto!")
     
     return opcionATratar()
+
+def mostrarDespedida():
+    print("\n¡Hasta pronto!")
 
 # Registra a un usuario.
 def registro():
@@ -130,10 +139,19 @@ def registro():
             break
         else:
             print("[ERROR] Introduce al menos un carácter.")
+            
+    existe_usuario = False
     
-    usuario = Usuario(nick, edad, clave, lista_series)
-    global_usuario = usuario
-    lista_usuarios.append(global_usuario)
+    for usuario in lista_usuarios:
+        if (usuario.get_nombre() == nick):
+            print("[ERROR] Ya existe un usuario con ese nombre.")
+            existe_usuario = True
+            break
+    
+    if not existe_usuario:
+        usuario = Usuario(nick, edad, clave, lista_series)
+        global_usuario = usuario
+        lista_usuarios.append(global_usuario)
     
     mostrarMenuUsuario()
 
@@ -147,36 +165,39 @@ def inicioSesion():
     print("|| ~ INICIAR SESIÓN ~ ||")
     print("========================")
     
-    while True:
-        nick = raw_input(">>> Nombre: ")
+    if (len(lista_usuarios) > 0):
+        while True:
+            nick = raw_input(">>> Nombre: ")
+            
+            if (len(nick) > 0):
+                break
+            else:
+                print("[ERROR] Introduce al menos un carácter.")
         
-        if (len(nick) > 0):
-            break
+        while True:
+            clave = raw_input(prompt = ">>> Contraseña: ")
+            
+            if (len(clave) > 0):
+                break
+            else:
+                print("[ERROR] Introduce al menos un carácter.")
+        
+        for usuario in lista_usuarios:
+            hayError = True
+            
+            if (nick == usuario.get_nombre() and clave == usuario.get_clave()):
+                hayError = False
+                global_usuario = usuario
+                break
+        
+        if (hayError):
+            print("\n[ERROR] Credenciales incorrectas.")
+            mostrarMenuUsuario()
         else:
-            print("[ERROR] Introduce al menos un carácter.")
-    
-    while True:
-        clave = raw_input(prompt = ">>> Contraseña: ")
-        
-        if (len(clave) > 0):
-            break
-        else:
-            print("[ERROR] Introduce al menos un carácter.")
-    
-    for usuario in lista_usuarios:
-        hayError = True
-        
-        if (nick == usuario.get_nombre() and clave == usuario.get_clave()):
-            hayError = False
-            global_usuario = usuario
-            break
-    
-    if (hayError):
-        print("\n[ERROR] Credenciales incorrectas.")
-        mostrarMenuUsuario()
-
+            mostrarMenuDamflix()
     else:
-        mostrarMenuDamflix()
+        print("\n[INFO] No hay usuarios registrados.")
+        mostrarMenuUsuario()
 
 """
 //=======================================================================================
@@ -266,6 +287,7 @@ def verCatalogoPeliculas():
 # Marca una película como vista.
 def marcarPeliculaVista():
     global global_usuario
+    global lista_peliculas
     
     print
     print("===============================")
@@ -273,10 +295,26 @@ def marcarPeliculaVista():
     print("===============================")
     
     id_pelicula = solicitarOpcion(">>> ID de la película: ", len(lista_peliculas))
-    pelicula = lista_peliculas[id_pelicula - 1]
-    global_usuario.anhadir_pelicula_vista(pelicula)
     
-    print("[INFO] Marcada como vista: " + pelicula.get_titulo())
+    existe_id = False
+    
+    for pelicula in global_usuario.get_peliculas_vistas():
+        if (pelicula.get_id() == str(id_pelicula)):
+            print("[ERROR] Ya tienes esa película en la lista.")
+            existe_id = True
+            break
+    
+    if not existe_id:
+        pelicula = lista_peliculas[id_pelicula - 1]
+        global_usuario.anhadir_pelicula_vista(pelicula)
+        print("[INFO] Marcada como vista: " + pelicula.get_titulo())
+        
+        idPeliculaVista = pelicula.get_id()
+        
+        for pelicula in global_usuario.get_peliculas_por_ver():
+            if(idPeliculaVista == pelicula.get_id()):
+                global_usuario.get_peliculas_por_ver().remove(pelicula)
+                print("[INFO] Se ha borrado la película "+ pelicula.get_titulo() +" de la lista de películas para ver.")
     
     mostrarMenuPeliculas()
     
@@ -289,8 +327,11 @@ def verListaPeliculasVistas():
     print("|| ~ LISTA PELÍCULAS VISTAS ~ ||")
     print("================================")
     
-    for pelicula in global_usuario.get_peliculas_vistas():
-        print(pelicula.to_string())
+    if (len(global_usuario.get_peliculas_vistas()) > 0):
+        for pelicula in global_usuario.get_peliculas_vistas():
+            print(pelicula.to_string())
+    else:
+        print("\n[INFO] No tienes películas vistas.")
     
     mostrarMenuPeliculas()
 
@@ -304,10 +345,26 @@ def marcarPeliculaParaVer():
     print("==================================")
     
     id_pelicula = solicitarOpcion(">>> ID de la película: ", len(lista_peliculas))
-    pelicula = lista_peliculas[id_pelicula - 1]
-    global_usuario.anhadir_pelicula_por_ver(pelicula)
     
-    print("[INFO] Marcada para ver: " + pelicula.get_titulo())
+    existe_id = False
+    
+    for pelicula in global_usuario.get_peliculas_por_ver():
+        if (pelicula.get_id() == str(id_pelicula)):
+            print("[ERROR] Ya tienes esa película en la lista.")
+            existe_id = True
+            break
+    
+    if not existe_id:
+        pelicula = lista_peliculas[id_pelicula - 1]
+        global_usuario.anhadir_pelicula_por_ver(pelicula)
+        print("[INFO] Marcada para ver: " + pelicula.get_titulo())
+        
+        id_pelicula_por_ver = pelicula.get_id()
+        
+        for pelicula in global_usuario.get_peliculas_vistas():
+            if(id_pelicula_por_ver == pelicula.get_id()):
+                global_usuario.get_peliculas_vistas().remove(pelicula)
+                print("[INFO] Se ha borrado la película "+ pelicula.get_titulo() +" de la lista de películas vistas.")
     
     mostrarMenuPeliculas()
 
@@ -320,8 +377,11 @@ def verListaPeliculasPorVer():
     print("|| ~ LISTA PELÍCULAS PARA VER ~ ||")
     print("==================================")
     
-    for pelicula in global_usuario.get_peliculas_por_ver():
-        print(pelicula.to_string())
+    if (len(global_usuario.get_peliculas_por_ver()) > 0):
+        for pelicula in global_usuario.get_peliculas_por_ver():
+            print(pelicula.to_string())
+    else:
+        print("\n[INFO] No tienes películas para ver.")
     
     mostrarMenuPeliculas()
 
@@ -389,11 +449,28 @@ def marcarSerieVista():
     print("============================")
     
     id_serie = solicitarOpcion(">>> ID de la serie: ", len(global_usuario.get_series()))
-    serie = global_usuario.get_series()[id_serie - 1]
-    global_usuario.anhadir_serie_vista(serie)
-    serie.marcar_todos_capitulos_vistos()
     
-    print("[INFO] Marcada como vista: " + serie.get_titulo())
+    existe_id = False
+    
+    for serie in global_usuario.get_series_vistas():
+        if (serie.get_id() == str(id_serie)):
+            print("[ERROR] Ya tienes esa serie en la lista.")
+            existe_id = True
+            break
+        
+    if not existe_id:
+        serie = global_usuario.get_series()[id_serie - 1]
+        global_usuario.anhadir_serie_vista(serie)
+        serie.marcar_todos_capitulos_vistos()
+        print("[INFO] Marcada como vista: " + serie.get_titulo())
+        
+        id_serie_vista = serie.get_id()
+    
+        #Borrar de la lista de series por ver
+        for serie in global_usuario.get_series_por_ver():
+                if(id_serie_vista == serie.get_id()):
+                    global_usuario.get_series_por_ver().remove(serie)
+                    print("[INFO] Se ha borrado la serie " + serie.get_titulo() + " de la lista de series por ver.")
     
     mostrarMenuSeries()
 
@@ -406,8 +483,11 @@ def verListaSeriesVistas():
     print("|| ~ LISTA SERIES VISTAS ~ ||")
     print("=============================")
     
-    for serie in global_usuario.get_series_vistas():
-        print(serie.to_string())
+    if (len(global_usuario.get_series_vistas()) > 0):    
+        for serie in global_usuario.get_series_vistas():
+            print(serie.to_string())
+    else:
+        print("\n[INFO] No tienes series vistas.")
     
     mostrarMenuSeries()
 
@@ -437,8 +517,11 @@ def verListaSeriesPorVer():
     print("|| ~ LISTA SERIES PARA VER ~ ||")
     print("===============================")
     
-    for serie in global_usuario.get_series_por_ver():
-        print(serie.to_string())
+    if (len(global_usuario.get_series_por_ver()) > 0):
+        for serie in global_usuario.get_series_por_ver():
+            print(serie.to_string())
+    else:
+        print("\n[INFO] No tienes series para ver.")
     
     mostrarMenuSeries()
 
@@ -464,6 +547,14 @@ def marcarCapituloVisto():
     if (serie.comprobar_serie_vista() == True):
         global_usuario.anhadir_serie_vista(serie)
         print("¡Enhorabuena! Ya has completado la serie :)")
+        
+        id_serie_completada = serie.get_id()
+        
+        #Borrar de la lista de series por ver
+        for serie in global_usuario.get_series_por_ver():
+            if(id_serie_completada == serie.get_id()):
+                print("[INFO] Se ha borrado la serie " + serie.get_titulo() + " de la lista de series por ver.")
+                global_usuario.get_series_por_ver().remove(serie)
     
     mostrarMenuSeries()
     
