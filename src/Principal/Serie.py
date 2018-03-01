@@ -55,7 +55,7 @@ class Serie(object):
         return len(self.temporadas)
     
     def get_numero_capitulos(self):
-        return self.temporadas[0]
+        return int(self.temporadas[0])
 
     # MÉTODOS
     def mostrarCapitulosVistos(self):
